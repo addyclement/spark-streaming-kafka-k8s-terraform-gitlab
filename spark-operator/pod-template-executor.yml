@@ -1,0 +1,20 @@
+# https://github.com/awslabs/ec2-spot-labs/blob/master/cost-optimized-spark-on-kubernetes/executor_pod_template.yml
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    spark-role: executor
+  namespace: spark-operator
+spec:
+  containers:
+  - name: spark-kubernetes-executor
+  serviceAccountName: spark
+  affinity: 
+      nodeAffinity: 
+          requiredDuringSchedulingIgnoredDuringExecution: 
+            nodeSelectorTerms: 
+            - matchExpressions: 
+              - key: 'eks.amazonaws.com/capacityType' 
+                operator: In 
+                values: 
+                - SPOT

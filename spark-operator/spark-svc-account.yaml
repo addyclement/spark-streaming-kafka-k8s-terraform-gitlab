@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: spark
+  namespace: spark-operator
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::205232154569:role/bexley-policy"
+
+# for publication eks.amazonaws.com/role-arn: "arn:aws:iam::205232154569:role/bexley-policy"
+# https://docs.aws.amazon.com/eks/latest/userguide/associate-service-account-role.html

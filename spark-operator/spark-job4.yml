@@ -1,0 +1,56 @@
+# https://towardsdatascience.com/how-to-run-a-pyspark-job-in-kubernetes-aws-eks-d886193dac3c
+# nice one here fixes d charts issue https://medium.com/nerd-for-tech/running-apache-spark-on-eks-with-aws-spot-instances-f8ce91d319b9
+# and spots selection
+# https://blog.min.io/spark-minio-kubernetes/
+# https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/user-guide.md
+# https://blog.devgenius.io/spark-operator-basics-2ad7ecd469e1 template sparkopeartor
+# volume option https://medium.com/nerd-for-tech/pyspark-spark-operator-amazon-eks-big-data-on-steroids-7d1ccedb765b
+# many samples here sparapp https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/examples/spark-operator-with-metrics.yaml
+#     jarsDownloadDir:
+#      - local:///opt/bitnami/spark/tmp
+# choose between spark submit and operator https://www.lightbend.com/blog/how-to-manage-monitor-spark-on-kubernetes-deep-dive-kubernetes-operator-for-spark
+# spark driver as a job https://techblog.cisco.com/blog/spark-job-resilience
+# spark & k8s checkpointing https://techblog.cisco.com/blog/spark-checkpointing
+# excellent for final svc deployment https://faun.pub/build-laravel-app-pipeline-using-gitlab-cicd-docker-aws-ecr-eks-b1a7da08a43e
+# to review https://aws.amazon.com/blogs/containers/best-practices-for-running-spark-on-amazon-eks/ 
+# https://repost.aws/knowledge-center/eks-persistent-storage
+# understanding spark chkpointing https://blog.devops.dev/from-the-above-table-we-can-easily-understand-that-1st-offset-will-process-the-24-rows-4-12-08-a747de34316d
+# must quote https://aws.amazon.com/blogs/containers/best-practices-for-running-spark-on-amazon-eks/
+
+apiVersion: "sparkoperator.k8s.io/v1beta2"
+kind: SparkApplication
+metadata:
+  name: bexley-spark-streaming-svc
+  namespace: spark-operator
+spec:
+  deps:
+    jars:
+      - local:///opt/bitnami/spark/jars/mysql-connector-java-5.1.49.jar
+      - local:///opt/bitnami/spark/jars/elasticsearch-spark-30_2.12-8.2.1.jar
+    packages:
+      - org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.2
+  type: Python
+  pythonVersion: "3"
+  mode: cluster
+  image: "205232154569.dkr.ecr.eu-west-2.amazonaws.com/bexley-analytics:latest"
+  imagePullPolicy: Always
+  imagePullSecrets:
+    - bexley-ecr-secret
+  mainApplicationFile: local:///opt/bitnami/spark/code/bexley_spark_stream_msk_es_05.py
+  sparkVersion: "3.4.1"
+  restartPolicy:
+    type: OnFailure
+    onFailureRetries: 1
+  driver:
+    cores: 1
+    memory: "1G"
+    labels:
+      version: 3.4.1
+    serviceAccount: spark
+  executor:
+    cores: 1
+    instances: 1
+    memory: "1G"
+    labels:
+      version: 3.4.1
+    

@@ -1,0 +1,73 @@
+stages:
+    - deploy
+    - test
+    - clean_up
+
+default:
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  before_script:
+    - aws --version
+    # - aws sts get-caller-identity
+    - aws eks update-kubeconfig --region $AWS_DEFAULT_REGION --name $EKS_CLUSTER_NAME
+    # - apt-get install -y gettext # To get envsubst 
+    - curl --silent --location -o /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl
+    - chmod +x /usr/local/bin/kubectl
+    - curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+    - mv /tmp/eksctl /usr/local/bin
+    - kubectl version --client
+    - eksctl version
+    - echo "installing helm ..."
+    - curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+    - chmod 700 get_helm.sh
+    - ./get_helm.sh
+    - source ~/.bashrc
+    - helm version | cut -d + -f 1
+
+deploy_app_to_eks:
+  stage: deploy
+
+  script: 
+    - kubectl apply -f spark-deployment/namespaces.yaml
+    - echo "create service account and iam role"
+    - eksctl create iamserviceaccount --name $SPARK_SVC_ACC --namespace $SPARK_NAMESPACE --cluster $EKS_CLUSTER_NAME --attach-policy-arn $SVC_ACC_IAM_POLICY --approve
+    - echo "create role binding"
+    - kubectl apply -f spark-deployment/spark-rbac-clusterbinding.yml 
+    - echo "adding spark operator repo to helm ... "
+    - helm repo add spark-operator https://googlecloudplatform.github.io/spark-on-k8s-operator
+    - helm install spark-operator spark-operator/spark-operator --namespace $SPARK_NAMESPACE
+    - echo "creating secret for ECR registry ..."
+    - | 
+        kubectl create secret docker-registry $ECR_SECRET --docker-server=$DOCKER_REGISTRY --docker-username=AWS \
+        --docker-password=$(aws ecr get-login-password) --namespace=$SPARK_NAMESPACE
+    - echo "deploy spark application via spark operator"
+    - kubectl apply -f spark-deployment/bexley-spark-sreaming-app.yml
+    - echo "describe the iam service account"
+    - kubectl describe sa $SPARK_SVC_ACC -n $SPARK_NAMESPACE
+    - helm repo list
+    - helm list --all-namespaces
+    - sleep 10
+    - echo "view all resources in namepsace ..."
+    - kubectl get nodes
+    - kubectl get all -n $SPARK_NAMESPACE
+  when: manual
+
+test_deployment:
+   stage: test
+   script:
+    - echo "this is the test phase"
+   dependencies:
+    - deploy_app_to_eks 
+
+clean_up_deployment:
+   stage: clean_up
+   script:
+    - echo "this stage deletes the deployment .."
+    - echo "deleting assets ... "
+    - helm delete spark-operator --ignore-not-found=true -n $SPARK_NAMESPACE
+    - kubectl delete secret $ECR_SECRET --ignore-not-found=true -n $SPARK_NAMESPACE
+    - eksctl delete iamserviceaccount $SPARK_SVC_ACC --cluster $EKS_CLUSTER_NAME --namespace $SPARK_NAMESPACE
+    # - eksctl delete iamserviceaccount spark --cluster bexley-on-eks --namespace spark-operator
+    #- kubectl delete serviceaccount -n $SPARK_NAMESPACE $SPARK_SVC_ACC
+    # - kubectl delete namespace $SPARK_NAMESPACE
+   when: manual
+

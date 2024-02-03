@@ -1,0 +1,42 @@
+stages:
+    - deploy
+    - clean-up
+
+default:
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  before_script:
+    - aws --version
+    - aws sts get-caller-identity
+    - aws eks update-kubeconfig --region $AWS_DEFAULT_REGION --name $EKS_CLUSTER_NAME 
+    - curl --silent --location -o /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl
+    - chmod +x /usr/local/bin/kubectl
+
+deploy fluentbit to eks:
+  stage: deploy
+
+  script: 
+    - echo "Create Kubernetes namespace"
+    - kubectl apply -f fluent/namespace.yml
+    - echo "Create secret for elastic search"
+    - kubectl apply -f fluent/elasticsearch-secret.yaml
+    - echo "Create Elasticsearch Config Map"
+    - kubectl apply -f fluent/elasticsearch-configmap.yaml
+    - echo "Create Service Account"
+    - kubectl apply -f fluent/fluent-bit-service-account.yaml
+    - echo "Create Cluster Role"
+    - kubectl apply -f fluent/fluent-bit-role.yaml
+    - echo "Create Cluster Role Binding"
+    - kubectl apply -f fluent/fluent-bit-role-binding.yaml
+    - echo "Create ConfigMap for Fluent bit"
+    - kubectl apply -f fluent/fluent-bit-configmap.yaml
+    - echo "Create Fluent Bit DaemonSet"
+    - kubectl apply -f fluent/fluent-bit-ds.yaml
+    - echo "preview assets"
+    - kubectl describe sa fluent-bit -n $LOGGING_NAMESPACE
+    # - kubectl get pods, configmaps,pv,endpoints,ingress,serviceaccounts -n $LOGGING_NAMESPACE
+    - kubectl get pods,daemonset,configmaps,serviceaccounts -n $LOGGING_NAMESPACE
+
+clean up artifacts :
+  stage: clean-up
+  script :
+    - echo "cleaning up resources ..."

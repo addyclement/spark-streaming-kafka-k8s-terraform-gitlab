@@ -1,0 +1,71 @@
+# Copyright VMware, Inc.
+# SPDX-License-Identifier: APACHE-2.0
+
+version: '2'
+
+services:
+  spark:
+    image: spark-bexley:latest
+    container_name: master-node
+    environment:
+      - SPARK_MODE=master
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+      - SPARK_USER=spark
+    volumes:
+      - ../code:/opt/bitnami/spark/code
+    ports:
+      - "9090:8080"
+      - "7077:7077"
+      - "4040:4040"
+    networks:
+      - spark-bexley-network
+  spark-worker:
+    image: spark-bexley:latest
+    container_name: worker-node-1
+    ports:
+      - "9091:8081"
+      - "7000:7000"
+    networks:
+      - spark-bexley-network
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark:7077
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_WORKER_CORES=1
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+      - SPARK_USER=spark
+    volumes:
+      - ../code:/opt/bitnami/spark/code
+  spark-worker-2:
+    image: spark-bexley:latest
+    container_name: worker-node-2
+    ports:
+      - "9092:8081"
+      - "7001:7000"
+    networks:
+      - spark-bexley-network
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark:7077
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_WORKER_CORES=1
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+      - SPARK_USER=spark
+    volumes:
+      - ../code:/opt/bitnami/spark/code
+networks:
+  spark-bexley-network:
+    driver: bridge
+
+
+#adapt to this https://github.com/bitnami/containers/blob/main/bitnami/spark/3.4/debian-11/docker-compose.yml
+# https://towardsdatascience.com/diy-apache-spark-docker-bb4f11c10d24

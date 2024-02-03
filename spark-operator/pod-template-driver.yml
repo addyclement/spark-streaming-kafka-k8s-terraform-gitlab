@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    spark-role: driver
+  namespace: spark-operator
+spec:
+  containers:
+  - name: spark-kubernetes-driver
+  topology.kubernetes.io/zone: eu-west-2b
+  serviceAccountName: spark
+  affinity: 
+      nodeAffinity: 
+          requiredDuringSchedulingIgnoredDuringExecution: 
+            nodeSelectorTerms: 
+            - matchExpressions: 
+              - key: 'eks.amazonaws.com/capacityType' 
+                operator: In 
+                values: 
+                - ON_DEMAND

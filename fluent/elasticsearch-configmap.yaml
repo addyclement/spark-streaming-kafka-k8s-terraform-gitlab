@@ -1,0 +1,9 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: elasticsearch-configmap
+  namespace: logging
+data:
+  CLOUD_ELASTICSEARCH_ID: bexley-shopping:ZXUtd2VzdC0yLmF3cy5jbG91ZC5lcy5pbyQxNzk1ZGM4Y2E3YmY0ZDg2OThlNmNmNWNkYTZiODEzMiQzMTQ5MWFiNWU0ZGM0ZWQxOTZiNDgzNTE3ZTgzN2JjMw==
+  CLOUD_ELASTICSEARCH_HOST: https://1795dc8ca7bf4d8698e6cf5cda6b8132.eu-west-2.aws.cloud.es.io
+  CLOUD_ELASTICSEARCH_PORT: '443'

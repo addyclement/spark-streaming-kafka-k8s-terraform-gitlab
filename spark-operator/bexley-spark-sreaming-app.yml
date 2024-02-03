@@ -1,0 +1,42 @@
+apiVersion: "sparkoperator.k8s.io/v1beta2"
+kind: SparkApplication
+metadata:
+  name: bexley-spark-streaming-svc-2
+  namespace: spark-operator
+spec:
+  deps:
+    jars:
+      - local:///opt/bitnami/spark/jars/mysql-connector-java-5.1.49.jar
+      - local:///opt/bitnami/spark/jars/elasticsearch-spark-30_2.12-8.2.1.jar
+    packages:
+      - org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.2
+      - org.apache.spark:spark-avro_2.12:3.3.0
+      - org.apache.hadoop:hadoop-aws:3.3.2
+  type: Python
+  pythonVersion: "3"
+  sparkConf:
+    spark.kubernetes.checkpointdir.enable: "true"
+    spark.kubernetes.checkpointdir.path: s3a://bexley-checkpointdir/tracking/
+  mode: cluster
+  image: "205232154569.dkr.ecr.eu-west-2.amazonaws.com/bexley-analytics:latest"
+  imagePullPolicy: Always
+  imagePullSecrets:
+    - bexley-ecr-secret
+  mainApplicationFile: local:///opt/bitnami/spark/code/bexley_spark_stream_msk_es_05.py
+  sparkVersion: "3.4.1"
+  restartPolicy:
+    type: OnFailure
+    onFailureRetries: 2
+  driver:
+    cores: 1
+    memory: "1G"
+    labels:
+      version: 3.4.1
+    serviceAccount: spark
+  executor:
+    cores: 1
+    instances: 1
+    memory: "1G"
+    labels:
+      version: 3.4.1
+    

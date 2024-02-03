@@ -1,0 +1,11 @@
+lxml
+python-decouple
+requests
+pandas
+ecs_logging
+pymysql
+mysql.connector
+sqlalchemy
+boto3
+botocore
+
