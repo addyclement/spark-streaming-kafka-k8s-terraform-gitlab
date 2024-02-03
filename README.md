@@ -153,3 +153,33 @@ serviceaccount/fluent-bit   0         3m50s
 ```
 
 ***Deploy Spark Application to EKS***
+
+
+
+
+delete infra
+
+```
+module.eks.aws_security_group.cluster[0]: Destroying... [id=sg-0be56540a26a6f6bb]
+module.eks.aws_security_group.node[0]: Destroying... [id=sg-05c68102377a621f8]
+module.eks.aws_security_group.cluster[0]: Destruction complete after 1s
+module.eks.aws_security_group.node[0]: Destruction complete after 1s
+module.vpc.aws_vpc.this[0]: Destroying... [id=vpc-0a8e7f2a799843186]
+module.vpc.aws_vpc.this[0]: Destruction complete after 1s
+╷
+│ Warning: EC2 Default Network ACL (acl-0f4fbd44e8491c1d1) not deleted, removing from state
+│ 
+│ 
+╵
+Releasing state lock. This may take a few moments...
+Destroy complete! Resources: 72 destroyed.
+Saving cache for successful job
+00:14
+Creating cache default-protected...
+.terraform: found 417 matching artifact files and directories 
+Uploading cache.zip to https://storage.googleapis.com/gitlab-com-runners-cache/project/54093755/default-protected 
+Created cache
+Cleaning up project directory and file based variables
+00:00
+Job succeeded
+```
