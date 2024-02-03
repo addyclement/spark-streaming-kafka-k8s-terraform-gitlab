@@ -80,3 +80,55 @@ Coverage XML written to file /builds/binaries1/bexley_ci/coverage/cobertura_cove
 Required test coverage of 40% reached. Total coverage: 40.00%
 =========================== short test summary info ============================
 ```
+
+Deploy FluentBit Logging
+
+```
+$ aws eks update-kubeconfig --region $AWS_DEFAULT_REGION --name $EKS_CLUSTER_NAME
+Added new context arn:aws:eks:[MASKED]:205232154569:cluster/bexley-on-eks to /root/.kube/config
+$ curl --silent --location -o /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl
+$ chmod +x /usr/local/bin/kubectl
+$ echo "Create Kubernetes namespace"
+Create Kubernetes namespace
+$ kubectl apply -f fluent/namespace.yml
+namespace/logging created
+$ echo "Create secret for elastic search"
+Create secret for elastic search
+$ kubectl apply -f fluent/elasticsearch-secret.yaml
+secret/elasticsearch-secret created
+$ echo "Create Elasticsearch Config Map"
+Create Elasticsearch Config Map
+$ kubectl apply -f fluent/elasticsearch-configmap.yaml
+configmap/elasticsearch-configmap created
+$ echo "Create Service Account"
+Create Service Account
+$ kubectl apply -f fluent/fluent-bit-service-account.yaml
+serviceaccount/fluent-bit created
+$ echo "Create Cluster Role"
+Create Cluster Role
+$ kubectl apply -f fluent/fluent-bit-role.yaml
+clusterrole.rbac.authorization.k8s.io/fluent-bit-read created
+$ echo "Create Cluster Role Binding"
+Create Cluster Role Binding
+$ kubectl apply -f fluent/fluent-bit-role-binding.yaml
+clusterrolebinding.rbac.authorization.k8s.io/fluent-bit-read created
+$ echo "Create ConfigMap for Fluent bit"
+Create ConfigMap for Fluent bit
+$ kubectl apply -f fluent/fluent-bit-configmap.yaml
+configmap/fluent-bit-config created
+$ echo "Create Fluent Bit DaemonSet"
+Create Fluent Bit DaemonSet
+$ kubectl apply -f fluent/fluent-bit-ds.yaml
+daemonset.apps/fluent-bit created
+$ echo "preview assets"
+preview assets
+$ kubectl describe sa fluent-bit -n $LOGGING_NAMESPACE
+Name:                fluent-bit
+Namespace:           logging
+Labels:              <none>
+Annotations:         <none>
+Image pull secrets:  <none>
+Mountable secrets:   <none>
+Tokens:              <none>
+Events:              <none>
+```
