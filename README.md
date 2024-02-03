@@ -1,5 +1,13 @@
 **Fault Tolerant Spark Streaming Pipeline - Kafka, Elastic, FluentBit, GitLab, Terraform & Kubernetes**
 
+```
+addyclement@ip-192-168-1-147 bexley-ecomm % kubectl get nodes -L eks.amazonaws.com/capacityType,eks.amazonaws.com/nodegroup
+NAME                                        STATUS   ROLES    AGE   VERSION               CAPACITYTYPE   NODEGROUP
+ip-10-0-79-70.eu-west-2.compute.internal    Ready    <none>   15m   v1.28.5-eks-5e0fdde   ON_DEMAND      ondemand_large-2024020319554299210000001b
+ip-10-0-80-162.eu-west-2.compute.internal   Ready    <none>   14m   v1.28.5-eks-5e0fdde   SPOT           spot_large-2024020319554299580000001d
+
+```
+
 Project Tree Structure
 ```
 ├── bexley
