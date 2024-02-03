@@ -1,0 +1,54 @@
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  MIN_COVERAGE_PCT : 55
+
+cache:
+  paths:
+    - .cache/pip
+
+default:
+    image: python:3.11
+    before_script:
+        - apt-get update
+        - apt-get install -y python3-pip
+        - apt-get install default-jdk -y
+        - pip install -r requirements.txt
+
+stages:
+    - build_test
+    - end_job
+build_test:
+    stage: build_test
+    artifacts:
+        when : always
+        paths :
+            - '/builds/binaries1/bexley_ci/coverage/'
+        expire_in: 5 week
+        reports:
+            coverage_report:
+                coverage_format: cobertura
+                path: '$CI_PROJECT_DIR/coverage/cobertura_coverage.xml'
+    coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
+
+    script:
+        - python3 -VV 
+        - java -version
+        - cd $CI_PROJECT_DIR
+        - ls -la
+        - cp code/bexley_spark_stream_msk_es_04.py tests/
+        - cp code/bexley_load_auth_from_secrets_manager_v01.py tests/
+        - cp code/.env tests/
+        - cd tests/
+        - ls -la
+        - pwd
+        - pytest --cov --cov-report term-missing --cov-fail-under=$MIN_COVERAGE_PCT --cov-report xml:$CI_PROJECT_DIR/coverage/cobertura_coverage.xml
+        # - pytest --cov --cov-report term-missing --cov-report html:/builds/binaries1/bexley_ci/coverage/html
+        # - ls -la /builds/binaries1/bexley_ci/coverage/html
+
+      #  - coverage run -m pytest
+      #  - coverage report
+
+end_job:
+    stage: end_job
+    script:
+        - echo "Pipeline Complete"

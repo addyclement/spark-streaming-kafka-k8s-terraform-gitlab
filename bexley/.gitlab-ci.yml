@@ -1,0 +1,90 @@
+# You can override the included template(s) by including variable overrides
+# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
+# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+# Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
+# Note that environment variables can be set in several places
+# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
+variables:
+  APP_NAME: bexley-analytics
+  TAG: $CI_COMMIT_SHORT_SHA-$CI_PIPELINE_IID
+  AWS_DEFAULT_REGION: eu-west-2
+  DOCKER_HOST: tcp://docker:2375
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  MIN_COVERAGE_PCT : 52
+
+cache:
+  paths:
+    - .cache/pip
+
+stages:
+  - run-prebuild-unit-tests
+  - build-and-push-to-ecr
+  - end-deployment
+
+Run Prebuild Unit Tests:
+    stage: run-prebuild-unit-tests
+    image: python:3.11
+    before_script:
+        - apt-get update
+        - apt-get install -y python3-pip
+        - apt-get install default-jdk -y
+        - pip install -r requirements.txt
+
+    artifacts:
+        when : always
+        paths :
+            - $CI_PROJECT_DIR
+        expire_in: 5 week
+        reports:
+            coverage_report:
+                coverage_format: cobertura
+                path: '$CI_PROJECT_DIR/coverage/cobertura_coverage.xml'
+    coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
+
+    script:
+        - python3 -VV 
+        - java -version
+        # - cd $CI_PROJECT_DIR
+        - ls -la
+        - cp code/bexley_spark_stream_msk_es_05.py tests/
+        - cp code/bexley_load_auth_from_secrets_manager_v01.py tests/
+        - cp code/.env tests/
+        - cd tests/
+        - ls -la
+        - pwd
+        - pytest --cov --cov-report term-missing --cov-fail-under=$MIN_COVERAGE_PCT --cov-report xml:$CI_PROJECT_DIR/coverage/cobertura_coverage.xml
+ 
+
+
+Build and Push To ECR:
+  stage: build-and-push-to-ecr
+  image: 
+    name: amazon/aws-cli
+    entrypoint: [""]
+  before_script:
+   - amazon-linux-extras install docker
+   - aws --version
+   - docker --version
+
+  services:
+    - docker:dind
+  script:
+    - echo "Authenticate to ECR"
+    - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $DOCKER_REGISTRY
+    - echo "Build Docker Image ... "
+    - docker build -t $DOCKER_REGISTRY/$APP_NAME:latest .
+    - echo "Create tags for the current IID & latest"
+    - docker tag $DOCKER_REGISTRY/$APP_NAME:latest $DOCKER_REGISTRY/$APP_NAME:latest
+    - docker tag $DOCKER_REGISTRY/$APP_NAME:latest $DOCKER_REGISTRY/$APP_NAME:$TAG
+    - echo "Push both images to ECR , overriding the latest image ..."
+    - docker push $DOCKER_REGISTRY/$APP_NAME:latest
+    - docker push $DOCKER_REGISTRY/$APP_NAME:$TAG
+End Deployment:
+    stage: end-deployment
+    script:
+        - echo "Pipeline Complete"
+
+    
+
+
