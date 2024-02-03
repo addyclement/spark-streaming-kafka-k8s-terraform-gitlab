@@ -132,3 +132,22 @@ Mountable secrets:   <none>
 Tokens:              <none>
 Events:              <none>
 ```
+
+```
+ % kubectl get pods,daemonset,configmaps,serviceaccounts -n logging           
+NAME                   READY   STATUS    RESTARTS   AGE
+pod/fluent-bit-hlwqk   1/1     Running   0          3m44s
+pod/fluent-bit-krt69   1/1     Running   0          3m44s
+
+NAME                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+daemonset.apps/fluent-bit   2         2         2       2            2           <none>          3m44s
+
+NAME                                DATA   AGE
+configmap/elasticsearch-configmap   3      3m51s
+configmap/fluent-bit-config         5      3m46s
+configmap/kube-root-ca.crt          1      3m54s
+
+NAME                        SECRETS   AGE
+serviceaccount/default      0         3m54s
+serviceaccount/fluent-bit   0         3m50s
+```
