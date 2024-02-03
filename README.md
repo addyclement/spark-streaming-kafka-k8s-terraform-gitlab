@@ -66,3 +66,17 @@ Project Tree Structure
 
 ```
 ![Test Coverage](/imgs/coverage.png)
+
+
+```
+Name                        Stmts   Miss  Cover   Missing
+---------------------------------------------------------
+conftest.py                     6      2    67%   9-10
+test_bexley_transforms.py      26     16    38%   28-123
+test_lookup_transforms.py      28     18    36%   27-125
+---------------------------------------------------------
+TOTAL                          60     36    40%
+Coverage XML written to file /builds/binaries1/bexley_ci/coverage/cobertura_coverage.xml
+Required test coverage of 40% reached. Total coverage: 40.00%
+=========================== short test summary info ============================
+```
