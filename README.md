@@ -151,3 +151,5 @@ NAME                        SECRETS   AGE
 serviceaccount/default      0         3m54s
 serviceaccount/fluent-bit   0         3m50s
 ```
+
+***Deploy Spark Application to EKS***
