@@ -377,6 +377,19 @@ logging          fluent-bit-8wrlk                    1/1     Running            
 spark-operator   bexley-spark-streaming-svc-driver   0/1     ContainerCreating   0          7s
 spark-operator   spark-operator-675d97df85-4sqd5     1/1     Running             0          125m
 
+kubectl get pods -A                                                 
+NAMESPACE        NAME                                READY   STATUS    RESTARTS   AGE
+kube-system      aws-node-gr5zb                      2/2     Running   0          3h12m
+kube-system      aws-node-rwk9m                      2/2     Running   0          3h12m
+kube-system      coredns-798c569cc7-q7h6c            1/1     Running   0          3h12m
+kube-system      coredns-798c569cc7-wpqzt            1/1     Running   0          3h12m
+kube-system      kube-proxy-gq2j7                    1/1     Running   0          3h12m
+kube-system      kube-proxy-hl557                    1/1     Running   0          3h12m
+logging          fluent-bit-8j9xb                    1/1     Running   0          163m
+logging          fluent-bit-8wrlk                    1/1     Running   0          163m
+spark-operator   bexley-spark-streaming-svc-driver   1/1     Running   0          71s
+spark-operator   spark-operator-675d97df85-4sqd5     1/1     Running   0          145m
+
 ```
 
 delete infra
