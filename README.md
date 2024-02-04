@@ -3,9 +3,9 @@
 ==>> need to update producer code
 ```
 addyclement@ip-192-168-1-147 bexley-ecomm % kubectl get nodes -L eks.amazonaws.com/capacityType,eks.amazonaws.com/nodegroup
-NAME                                        STATUS   ROLES    AGE   VERSION               CAPACITYTYPE   NODEGROUP
-ip-10-0-79-70.eu-west-2.compute.internal    Ready    <none>   15m   v1.28.5-eks-5e0fdde   ON_DEMAND      ondemand_large-2024020319554299210000001b
-ip-10-0-80-162.eu-west-2.compute.internal   Ready    <none>   14m   v1.28.5-eks-5e0fdde   SPOT           spot_large-2024020319554299580000001d
+NAME                                        STATUS   ROLES    AGE     VERSION               CAPACITYTYPE   NODEGROUP
+ip-10-0-62-169.eu-west-2.compute.internal   Ready    <none>   6h49m   v1.28.5-eks-5e0fdde   SPOT           spot_large-2024020415473218410000001b
+ip-10-0-68-223.eu-west-2.compute.internal   Ready    <none>   6h49m   v1.28.5-eks-5e0fdde   ON_DEMAND      ondemand_large-2024020415473218570000001d
 
 ```
 
@@ -410,6 +410,21 @@ spark-operator   bexley-spark-streaming-svc-driver   1/1     Running   0        
 spark-operator   spark-operator-675d97df85-4sqd5     1/1     Running   0          145m
 
 ```
+
+![image](https://github.com/addyclement/spark-streaming-kafka-k8s-terraform-gitlab/assets/9949038/333bf741-5c5b-47c3-ba09-f2edaeaaa64f)
+
+
+Pods View
+![image](https://github.com/addyclement/spark-streaming-kafka-k8s-terraform-gitlab/assets/9949038/89afec13-b252-4be1-aca8-418c6c045f3a)
+
+Config
+![image](https://github.com/addyclement/spark-streaming-kafka-k8s-terraform-gitlab/assets/9949038/3dbe9305-bcb6-4403-8116-1839b17fd518)
+
+
+node 2 overview
+
+![image](https://github.com/addyclement/spark-streaming-kafka-k8s-terraform-gitlab/assets/9949038/651b92e5-cbbb-4ade-8f3e-f0dbadc4df5f)
+
 ```
 kubectl logs  -f pod/bexley-spark-streaming-svc-driver -n spark-operator
 exploded schema of the data frame
