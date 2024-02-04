@@ -493,6 +493,11 @@ Batch: 165
 
 ```
 
+paste s3 offset window here
+
+![image](https://github.com/addyclement/spark-streaming-kafka-k8s-terraform-gitlab/assets/9949038/e2090ad5-2ba1-4148-9cf0-4edb4a0c1b2e)
+
+
 ```
 kubectl delete pod/bexley-spark-streaming-svc-driver -n spark-operator
 pod "bexley-spark-streaming-svc-driver" deleted
