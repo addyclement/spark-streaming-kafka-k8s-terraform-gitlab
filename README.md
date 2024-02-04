@@ -69,6 +69,14 @@ Project Tree Structure
 ![Test Coverage](/imgs/coverage.png)
 
 
+Gitlab Image Build 
+
+![image](https://github.com/addyclement/spark-streaming-kafka-k8s-terraform-gitlab/assets/9949038/be72e198-0382-40b3-a1d4-9879c0aa793b)
+
+
+![image](https://github.com/addyclement/spark-streaming-kafka-k8s-terraform-gitlab/assets/9949038/212ce511-57bb-4468-863f-df9e081b9034)
+
+
 ```
 Name                        Stmts   Miss  Cover   Missing
 ---------------------------------------------------------
@@ -83,6 +91,9 @@ Required test coverage of 40% reached. Total coverage: 40.00%
 ```
 
 Deploy FluentBit Logging
+
+![image](https://github.com/addyclement/spark-streaming-kafka-k8s-terraform-gitlab/assets/9949038/9dd69359-251b-43ec-ad02-c24d4418819c)
+
 
 ```
 $ aws eks update-kubeconfig --region $AWS_DEFAULT_REGION --name $EKS_CLUSTER_NAME
@@ -159,6 +170,9 @@ View FluentBit Logs in Elastic
 
 
 ***Deploy Spark Application to EKS***
+
+![image](https://github.com/addyclement/spark-streaming-kafka-k8s-terraform-gitlab/assets/9949038/c4ba5bc7-6f12-4fee-bc3b-7a4336b1f29b)
+
 
 ```
 $ kubectl apply -f spark-deployment/namespaces.yaml
@@ -578,6 +592,8 @@ Batch: 168
 
 
 delete infra
+
+![image](https://github.com/addyclement/spark-streaming-kafka-k8s-terraform-gitlab/assets/9949038/4c638600-b067-4b5d-a9d6-8f1a279a3963)
 
 ```
 module.eks.aws_security_group.cluster[0]: Destroying... [id=sg-0be56540a26a6f6bb]
