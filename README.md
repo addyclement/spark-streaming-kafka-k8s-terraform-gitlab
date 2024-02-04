@@ -1,5 +1,5 @@
 **Fault Tolerant Spark Streaming Pipeline - Kafka, Elastic, FluentBit, GitLab, Terraform & Kubernetes**
-
+==>> need to update producer code
 ```
 addyclement@ip-192-168-1-147 bexley-ecomm % kubectl get nodes -L eks.amazonaws.com/capacityType,eks.amazonaws.com/nodegroup
 NAME                                        STATUS   ROLES    AGE   VERSION               CAPACITYTYPE   NODEGROUP
