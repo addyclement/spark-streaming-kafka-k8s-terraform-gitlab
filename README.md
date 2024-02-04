@@ -152,6 +152,11 @@ NAME                        SECRETS   AGE
 serviceaccount/default      0         3m54s
 serviceaccount/fluent-bit   0         3m50s
 ```
+View FluentBit Logs in Elastic
+
+![image](https://github.com/addyclement/spark-streaming-kafka-k8s-terraform-gitlab/assets/9949038/c8128523-a918-4a65-8956-1637b4e8ca68)
+
+
 
 ***Deploy Spark Application to EKS***
 
