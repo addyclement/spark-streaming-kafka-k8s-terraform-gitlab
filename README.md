@@ -391,6 +391,96 @@ spark-operator   bexley-spark-streaming-svc-driver   1/1     Running   0        
 spark-operator   spark-operator-675d97df85-4sqd5     1/1     Running   0          145m
 
 ```
+```
+kubectl logs  -f pod/bexley-spark-streaming-svc-driver -n spark-operator
+exploded schema of the data frame
+root
+ |-- order_id: integer (nullable = true)
+ |-- order_total: double (nullable = true)
+ |-- ship_to_city_id: integer (nullable = true)
+ |-- freight: double (nullable = true)
+ |-- customer_id: integer (nullable = true)
+ |-- ship_method: string (nullable = true)
+ |-- order_number: string (nullable = true)
+ |-- discount_applied: double (nullable = true)
+ |-- order_date: string (nullable = true)
+ |-- order_basket: array (nullable = true)
+ |    |-- element: struct (containsNull = true)
+ |    |    |-- order_qty: integer (nullable = true)
+ |    |    |-- product_id: integer (nullable = true)
+ |    |    |-- is_discounted: boolean (nullable = true)
+ |-- basket_exp: struct (nullable = true)
+ |    |-- order_qty: integer (nullable = true)
+ |    |-- product_id: integer (nullable = true)
+ |    |-- is_discounted: boolean (nullable = true)
+ |-- product_id: integer (nullable = true)
+ |-- order_qty: integer (nullable = true)
+
+Select specific colums from the data frame, transforming alongside
+printing out the schema for the transformed kafka feed
+root
+ |-- order_number: string (nullable = true)
+ |-- discounted_total: double (nullable = true)
+ |-- data_key: string (nullable = false)
+ |-- ship_to_city_id: integer (nullable = true)
+ |-- order_date: string (nullable = true)
+ |-- ship_method: string (nullable = true)
+ |-- fufilment_type: string (nullable = false)
+
+Initial Transformation of Raw Kafka Stream Successful ...
+{"@timestamp":"2024-02-04T19:02:04.302Z","log.level":"info","message":"JSON Dataframe Transformed","ecs":{"version":"1.6.0"},"http":{"request":{"body":{"content":"JSON Dataframe Transformed"}}},"log":{"logger":"__main__","origin":{"file":{"line":411,"name":"bexley_spark_stream_msk_es_05.py"},"function":"transform_json_message"},"original":"JSON Dataframe Transformed"},"process":{"name":"MainProcess","pid":81,"thread":{"id":139940811222848,"name":"MainThread"}}}
+writing enriched data set to console ...
+-------------------------------------------
+Batch: 0
+-------------------------------------------
++--------------+-----------------+-------------------------+---------------+--------------------------+-----------------+--------------+
+|order_number  |discounted_total |data_key                 |ship_to_city_id|order_date                |ship_method      |fufilment_type|
++--------------+-----------------+-------------------------+---------------+--------------------------+-----------------+--------------+
+|1945-3274-7556|890.01           |1945-3274-7556-2024-01-30|44             |2024-01-30T15:50:02.879982|Same-day delivery|Bexley        |
+|5837-5611-6373|497.7            |5837-5611-6373-2024-01-30|49             |2024-01-30T15:50:04.415186|Flat rate        |Merchant      |
+|2011-5421-6634|674.1            |2011-5421-6634-2024-01-30|55             |2024-01-30T15:50:04.946595|Same-day delivery|Merchant      |
+|6149-3789-5975|563.5699999999999|6149-3789-5975-2024-01-30|35             |2024-01-30T15:50:05.869356|Expedited        |Bexley        |
+|6427-6882-5012|59.4             |6427-6882-5012-2024-01-30|60             |2024-01-30T15:50:06.790050|Overnight        |Merchant      |
+|1733-5784-9865|374.64           |1733-5784-9865-2024-01-30|61             |2024-01-30T15:50:07.978531|Freight          |Merchant      |
+|4615-3525-8973|1113.6           |4615-3525-8973-2024-01-30|18             |2024-01-30T15:50:08.549629|Same-day delivery|Bexley        |
+|6070-4937-5799|549.9            |6070-4937-5799-2024-01-30|41             |2024-01-30T15:50:09.708694|Freight          |Merchant      |
+|4634-4194-5365|1029.6           |4634-4194-5365-2024-01-30|5              |2024-01-30T15:50:10.581634|2-day shipping   |Merchant      |
+|4250-3730-9480|97.68            |4250-3730-9480-2024-01-30|24             |2024-01-30T15:50:12.015131|International    |Bexley        |
+|4328-3618-5500|835.58           |4328-3618-5500-2024-01-30|43             |2024-01-30T15:50:13.155637|Freight          |Bexley        |
+|8196-5427-9916|1046.22          |8196-5427-9916-2024-01-30|18             |2024-01-30T15:50:14.051313|Overnight        |Merchant      |
+|2939-5909-8275|990.99           |2939-5909-8275-2024-01-30|38             |2024-01-30T15:50:15.564162|Freight          |Merchant      |
+|6578-6786-7564|926.52           |6578-6786-7564-2024-01-30|25             |2024-01-30T15:50:17.039149|Same-day delivery|Merchant      |
+|1683-6586-7592|945.2            |1683-6586-7592-2024-01-30|4              |2024-01-30T15:50:17.597214|Expedited        |Merchant      |
+|8540-4539-6212|711.99           |8540-4539-6212-2024-01-30|8              |2024-01-30T15:50:18.216827|2-day shipping   |Merchant      |
+|1207-5305-6809|451.53           |1207-5305-6809-2024-01-30|27             |2024-01-30T15:50:19.431432|Overnight        |Merchant      |
+|8841-6903-5597|274.35           |8841-6903-5597-2024-01-30|46             |2024-01-30T15:50:20.021068|Freight          |Merchant      |
+|3002-3834-7450|923.4            |3002-3834-7450-2024-01-30|11             |2024-01-30T15:50:21.287097|Expedited        |Bexley        |
+|6381-4358-8545|553.41           |6381-4358-8545-2024-01-30|3              |2024-01-30T15:50:22.803278|International    |Merchant      |
++--------------+-----------------+-------------------------+---------------+--------------------------+-----------------+--------------+
+only showing top 20 rows
+
+-------------------------------------------
+Batch: 1
+-------------------------------------------
++--------------+----------------+-------------------------+---------------+--------------------------+-----------------+--------------+
+|order_number  |discounted_total|data_key                 |ship_to_city_id|order_date                |ship_method      |fufilment_type|
++--------------+----------------+-------------------------+---------------+--------------------------+-----------------+--------------+
+|9089-5395-6646|757.35          |9089-5395-6646-2024-02-04|50             |2024-02-04T19:04:11.226381|Same-day delivery|Merchant      |
++--------------+----------------+-------------------------+---------------+--------------------------+-----------------+--------------+
+
+-------------------------------------------
+Batch: 2
+-------------------------------------------
++--------------+----------------+-------------------------+---------------+--------------------------+--------------+--------------+
+|order_number  |discounted_total|data_key                 |ship_to_city_id|order_date                |ship_method   |fufilment_type|
++--------------+----------------+-------------------------+---------------+--------------------------+--------------+--------------+
+|3001-3344-9828|85.85           |3001-3344-9828-2024-02-04|32             |2024-02-04T19:04:11.952191|Freight       |Bexley        |
+|1020-6289-6982|482.24          |1020-6289-6982-2024-02-04|41             |2024-02-04T19:04:13.367268|2-day shipping|Merchant      |
++--------------+----------------+-------------------------+---------------+--------------------------+--------------+--------------+
+
+
+
+```
 
 delete infra
 
