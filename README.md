@@ -154,7 +154,68 @@ serviceaccount/fluent-bit   0         3m50s
 
 ***Deploy Spark Application to EKS***
 
-
+```
+$ kubectl apply -f spark-deployment/namespaces.yaml
+namespace/spark-operator created
+$ echo "create service account and iam role"
+create service account and iam role
+$ eksctl create iamserviceaccount --name $SPARK_SVC_ACC --namespace $SPARK_NAMESPACE --cluster $EKS_CLUSTER_NAME --attach-policy-arn $SVC_ACC_IAM_POLICY --approve
+2024-02-04 16:36:37 [ℹ]  1 iamserviceaccount (spark-operator/spark) was included (based on the include/exclude rules)
+2024-02-04 16:36:37 [!]  serviceaccounts that exist in Kubernetes will be excluded, use --override-existing-serviceaccounts to override
+2024-02-04 16:36:37 [ℹ]  1 task: { 
+    2 sequential sub-tasks: { 
+        create IAM role for serviceaccount "spark-operator/spark",
+        create serviceaccount "spark-operator/spark",
+    } }2024-02-04 16:36:37 [ℹ]  building iamserviceaccount stack "eksctl-[MASKED]-addon-iamserviceaccount-spark-operator-spark"
+2024-02-04 16:36:37 [ℹ]  deploying stack "eksctl-[MASKED]-addon-iamserviceaccount-spark-operator-spark"
+2024-02-04 16:36:37 [ℹ]  waiting for CloudFormation stack "eksctl-[MASKED]-addon-iamserviceaccount-spark-operator-spark"
+2024-02-04 16:37:08 [ℹ]  waiting for CloudFormation stack "eksctl-[MASKED]-addon-iamserviceaccount-spark-operator-spark"
+2024-02-04 16:37:08 [ℹ]  created serviceaccount "spark-operator/spark"
+$ echo "create role binding"
+create role binding
+$ kubectl apply -f spark-deployment/spark-rbac-clusterbinding.yml
+clusterrolebinding.rbac.authorization.k8s.io/spark-c-role-binding created
+$ echo "adding spark operator repo to helm ... "
+adding spark operator repo to helm ... 
+$ helm repo add spark-operator https://googlecloudplatform.github.io/spark-on-k8s-operator
+"spark-operator" has been added to your repositories
+$ helm install spark-operator spark-operator/spark-operator --namespace $SPARK_NAMESPACE
+NAME: spark-operator
+LAST DEPLOYED: Sun Feb  4 16:37:15 2024
+NAMESPACE: spark-operator
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+$ echo "creating secret for ECR registry ..."
+creating secret for ECR registry ...
+$ kubectl create secret docker-registry $ECR_SECRET --docker-server=$DOCKER_REGISTRY --docker-username=AWS \ # collapsed multi-line command
+secret/bexley-ecr-secret created
+$ echo "deploy spark application via spark operator"
+deploy spark application via spark operator
+$ echo "describe the iam service account"
+describe the iam service account
+$ kubectl describe sa $SPARK_SVC_ACC -n $SPARK_NAMESPACE
+Name:                spark
+Namespace:           spark-operator
+Labels:              app.kubernetes.io/managed-by=eksctl
+Annotations:         eks.amazonaws.com/role-arn: arn:aws:iam::205232154569:role/eksctl-[MASKED]-addon-iamserviceaccount--Role1-wOqPZy57iF8s
+Image pull secrets:  <none>
+Mountable secrets:   <none>
+Tokens:              <none>
+Events:              <none>
+$ helm repo list
+NAME          	URL                                                        
+spark-operator	https://googlecloudplatform.github.io/spark-on-k8s-operator
+$ helm list --all-namespaces
+NAME          	NAMESPACE     	REVISION	UPDATED                               	STATUS  	CHART                	APP VERSION        
+spark-operator	spark-operator	1       	2024-02-04 16:37:15.09944279 +0000 UTC	deployed	spark-operator-1.1.27	v1beta2-1.3.8-3.1.1
+$ sleep 10
+$ echo "view all resources in namepsace ..."
+view all resources in namepsace ...
+$ eksctl get iamserviceaccount --cluster $EKS_CLUSTER_NAME
+NAMESPACE	NAME	ROLE ARN
+spark-operator	spark	arn:aws:iam::205232154569:role/eksctl-[MASKED]-addon-iamserviceaccount--Role1-wOqPZy57iF8s
+```
 
 
 delete infra
