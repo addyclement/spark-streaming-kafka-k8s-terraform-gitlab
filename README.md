@@ -572,6 +572,11 @@ Batch: 168
 
 ```
 
+![image](https://github.com/addyclement/spark-streaming-kafka-k8s-terraform-gitlab/assets/9949038/eaebf1d6-679d-4745-888c-ec8bb4ceb07a)
+
+![image](https://github.com/addyclement/spark-streaming-kafka-k8s-terraform-gitlab/assets/9949038/41a7811b-f8f4-45be-910e-ef0fb7d3e16d)
+
+
 delete infra
 
 ```
