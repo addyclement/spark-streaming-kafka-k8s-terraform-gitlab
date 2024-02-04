@@ -491,6 +491,29 @@ Batch: 77
 
 ```
 
+```
+kubectl delete pod/bexley-spark-streaming-svc-driver -n spark-operator
+pod "bexley-spark-streaming-svc-driver" deleted
+
+recreated pod
+
+kubectl get pods -A                                                   
+NAMESPACE        NAME                                READY   STATUS    RESTARTS   AGE
+kube-system      aws-node-gr5zb                      2/2     Running   0          3h25m
+kube-system      aws-node-rwk9m                      2/2     Running   0          3h25m
+kube-system      coredns-798c569cc7-q7h6c            1/1     Running   0          3h25m
+kube-system      coredns-798c569cc7-wpqzt            1/1     Running   0          3h25m
+kube-system      kube-proxy-gq2j7                    1/1     Running   0          3h25m
+kube-system      kube-proxy-hl557                    1/1     Running   0          3h25m
+logging          fluent-bit-8j9xb                    1/1     Running   0          176m
+logging          fluent-bit-8wrlk                    1/1     Running   0          176m
+spark-operator   bexley-spark-streaming-svc-driver   1/1     Running   0          36s
+spark-operator   spark-operator-675d97df85-4sqd5     1/1     Running   0          158m
+
+
+
+```
+
 delete infra
 
 ```
