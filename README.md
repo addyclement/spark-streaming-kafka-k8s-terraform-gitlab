@@ -521,7 +521,53 @@ logging          fluent-bit-8wrlk                    1/1     Running   0        
 spark-operator   bexley-spark-streaming-svc-driver   1/1     Running   0          36s
 spark-operator   spark-operator-675d97df85-4sqd5     1/1     Running   0          158m
 
+lets view if it starts from last offset
 
+kubectl logs  -f pod/bexley-spark-streaming-svc-driver -n spark-operator
+
+Select specific colums from the data frame, transforming alongside
+printing out the schema for the transformed kafka feed
+root
+ |-- order_number: string (nullable = true)
+ |-- discounted_total: double (nullable = true)
+ |-- data_key: string (nullable = false)
+ |-- ship_to_city_id: integer (nullable = true)
+ |-- order_date: string (nullable = true)
+ |-- ship_method: string (nullable = true)
+ |-- fufilment_type: string (nullable = false)
+
+Initial Transformation of Raw Kafka Stream Successful ...
+{"@timestamp":"2024-02-04T19:15:40.152Z","log.level":"info","message":"JSON Dataframe Transformed","ecs":{"version":"1.6.0"},"http":{"request":{"body":{"content":"JSON Dataframe Transformed"}}},"log":{"logger":"__main__","origin":{"file":{"line":411,"name":"bexley_spark_stream_msk_es_05.py"},"function":"transform_json_message"},"original":"JSON Dataframe Transformed"},"process":{"name":"MainProcess","pid":80,"thread":{"id":140382534520640,"name":"MainThread"}}}
+writing enriched data set to console ...
+-------------------------------------------
+Batch: 166
+-------------------------------------------
++--------------+----------------+-------------------------+---------------+--------------------------+-----------+--------------+
+|order_number  |discounted_total|data_key                 |ship_to_city_id|order_date                |ship_method|fufilment_type|
++--------------+----------------+-------------------------+---------------+--------------------------+-----------+--------------+
+|8437-3139-7250|817.29          |8437-3139-7250-2024-02-04|19             |2024-02-04T19:18:46.104910|Freight    |Bexley        |
++--------------+----------------+-------------------------+---------------+--------------------------+-----------+--------------+
+
+-------------------------------------------
+Batch: 167
+-------------------------------------------
++--------------+----------------+-------------------------+---------------+--------------------------+-------------+--------------+
+|order_number  |discounted_total|data_key                 |ship_to_city_id|order_date                |ship_method  |fufilment_type|
++--------------+----------------+-------------------------+---------------+--------------------------+-------------+--------------+
+|3706-3296-9177|584.32          |3706-3296-9177-2024-02-04|22             |2024-02-04T19:18:46.885017|Freight      |Bexley        |
+|7001-3828-8571|872.64          |7001-3828-8571-2024-02-04|4              |2024-02-04T19:18:47.899856|International|Bexley        |
+|2028-6576-8083|1128.11         |2028-6576-8083-2024-02-04|4              |2024-02-04T19:18:48.703440|Expedited    |Merchant      |
+|7546-3260-7507|395.85          |7546-3260-7507-2024-02-04|49             |2024-02-04T19:18:50.155353|International|Bexley        |
++--------------+----------------+-------------------------+---------------+--------------------------+-------------+--------------+
+
+-------------------------------------------
+Batch: 168
+-------------------------------------------
++--------------+----------------+-------------------------+---------------+--------------------------+-----------+--------------+
+|order_number  |discounted_total|data_key                 |ship_to_city_id|order_date                |ship_method|fufilment_type|
++--------------+----------------+-------------------------+---------------+--------------------------+-----------+--------------+
+|3520-5556-6592|31.35           |3520-5556-6592-2024-02-04|14             |2024-02-04T19:18:51.685728|Overnight  |Merchant      |
++--------------+----------------+-------------------------+---------------+--------------------------+-----------+--------------+
 
 ```
 
