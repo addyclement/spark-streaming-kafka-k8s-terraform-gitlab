@@ -167,7 +167,37 @@ View FluentBit Logs in Elastic
 
 ![image](https://github.com/addyclement/spark-streaming-kafka-k8s-terraform-gitlab/assets/9949038/c8128523-a918-4a65-8956-1637b4e8ca68)
 
-
+Run Producer code
+```
+{
+  "freight": 17,
+  "order_id": 3822,
+  "customer_id": 86278,
+  "ship_method": "Overnight",
+  "order_date": "2024-02-04T21:36:30.306375",
+  "order_total": 357,
+  "order_basket": [
+    {
+      "order_qty": 1,
+      "product_id": 13558,
+      "is_discounted": false
+    },
+    {
+      "order_qty": 7,
+      "product_id": 9549,
+      "is_discounted": true
+    },
+    {
+      "order_qty": 3,
+      "product_id": 11012,
+      "is_discounted": false
+    }
+  ],
+  "order_number": "1256-3077-7558",
+  "ship_to_city_id": 27,
+  "discount_applied": 6
+}
+```
 
 ***Deploy Spark Application to EKS***
 
