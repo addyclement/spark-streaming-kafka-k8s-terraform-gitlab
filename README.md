@@ -600,6 +600,9 @@ Batch: 168
 +--------------+----------------+-------------------------+---------------+--------------------------+-----------+--------------+
 
 ```
+quick query
+![image](https://github.com/addyclement/spark-streaming-kafka-k8s-terraform-gitlab/assets/9949038/876c2aa1-4167-43db-82be-a6cb3a6b3085)
+
 
 ![image](https://github.com/addyclement/spark-streaming-kafka-k8s-terraform-gitlab/assets/9949038/eaebf1d6-679d-4745-888c-ec8bb4ceb07a)
 
