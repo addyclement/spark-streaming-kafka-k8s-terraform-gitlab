@@ -18,7 +18,7 @@ spec:
     spark.kubernetes.checkpointdir.enable: "true"
     spark.kubernetes.checkpointdir.path: s3a://bexley-checkpointdir/tracking/
   mode: cluster
-  image: "205232154569.dkr.ecr.eu-west-2.amazonaws.com/bexley-analytics:latest"
+  image: "20XXXXXX4569.dkr.ecr.eu-west-2.amazonaws.com/bexley-analytics:latest"
   imagePullPolicy: Always
   imagePullSecrets:
     - bexley-ecr-secret
