@@ -413,7 +413,7 @@ Batch: 9
 % kubectl apply -f bexley-spark-sreaming-app.yml
 sparkapplication.sparkoperator.k8s.io/bexley-spark-streaming-svc created
 
-addyclement@ip-192-168-1-147 docker_model % kubectl get pods -A
+% kubectl get pods -A
 NAMESPACE        NAME                                READY   STATUS              RESTARTS   AGE
 kube-system      aws-node-gr5zb                      2/2     Running             0          172m
 kube-system      aws-node-rwk9m                      2/2     Running             0          172m
